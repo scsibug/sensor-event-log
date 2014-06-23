@@ -10,7 +10,7 @@ open/close) and persists them to a database.
 Requirements
 ================
 
-Twisted (14.0.0)
+Python, Flask, PostgreSQL
 
 Protocol
 ================
