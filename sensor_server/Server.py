@@ -51,6 +51,41 @@ def get_monitors():
         g.monitors = monitors
     return monitors
 
+# SQL queries
+find_monitor_id_SQL = "select name,id from monitor_points"
+insert_value_SQL = "insert into point_values (id, monitor_point, numeric_val, tstamp) values (DEFAULT, %(monitor_id)s, %(val)s, timestamptz 'epoch' + %(tstamp)s * INTERVAL '1 second')"
+
+def connect_db():
+    conn = psycopg2.connect(app.config['PG_CONN'])
+    return conn
+
+def get_db():
+    if not hasattr(g, 'pg_db'):
+        g.pg_db = connect_db()
+    return g.pg_db
+
+@app.teardown_appcontext
+def close_db(error):
+    if hasattr(g, 'pg_db'):
+        g.pg_db.close()
+
+@app.before_first_request
+def setup_logging():
+    fh = logging.StreamHandler()
+    fh.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
+    app.logger.addHandler(fh)
+    app.logger.setLevel(logging.INFO)
+
+def get_monitors():
+    if not hasattr(g, 'monitors'):
+        conn = get_db()
+        curs = conn.cursor() 
+        curs.execute(find_monitor_id_SQL)    
+        monitors = dict(curs.fetchall())
+        curs.close()
+        g.monitors = monitors
+    return monitors
+
 @app.route("/EventSink", methods=['POST'])
 def add_event():
     app.logger.info("event sink triggered")
