@@ -30,16 +30,16 @@ timestamp can be ignored.
 Sample event:
 
 {
-  "type": "event",
+  "type": "string",
   "monitor_point": "rpi.door.1",
-  "event": "open",
+  "value": "open",
   "timestamp": "1403407813.868718"
 }
 
 Sample value:
 
 {
-  "type": "value",
+  "type": "float",
   "monitor_point": "rpi.tempsoc.1",
   "value": "23.39",
   "timestamp": "1403407813.868718"
