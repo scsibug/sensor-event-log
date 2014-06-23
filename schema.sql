@@ -6,18 +6,19 @@ create table monitor_points (
   description text
 );
 
--- Store values recorded at monitoring points
+-- Store values and events recorded at monitoring points.
 create table point_values (
   id serial primary key,
   monitor_point serial references monitor_points(id),
-  numeric_val numeric,
+  numeric_val numeric, -- sample from a sensor
+  event text, -- event identifier
   tstamp timestamp with time zone
 );
 
 -- Store events recorded at monitoring points
-create table point_events (
-  id serial primary key,
-  monitor_point serial references monitor_points(id),
-  event text,
-  tstamp timestamp with time zone
-);
+--create table point_events (
+--  id serial primary key,
+--  monitor_point serial references monitor_points(id),
+--  event text,
+--  tstamp timestamp with time zone
+--);
