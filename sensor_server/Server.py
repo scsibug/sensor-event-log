@@ -14,8 +14,8 @@ app.config.update(dict(
     EVENT_SECRET_KEY='demo-secret-key',
     PG_CONN = 'dbname=sensorcollector user=sensorcollector password=sensorcollector host=localhost'
 ))
-app.config.from_envvar('SENSOR_SERVER_SETTINGS', silent=True)
-
+app.config.from_envvar('SENSOR_SERVER_SETTINGS', silent=False)
+print "using "+app.config['EVENT_SECRET_KEY']
 # SQL queries
 find_monitor_id_SQL = "select name,id from monitor_points"
 insert_value_SQL = "insert into point_values (id, monitor_point, numeric_val, tstamp) values (DEFAULT, %(monitor_id)s, %(val)s, timestamptz 'epoch' + %(tstamp)s * INTERVAL '1 second')"
@@ -56,16 +56,18 @@ def add_event():
     app.logger.info("event sink triggered")
 
     authz_header = request.headers.get('Authorization')
+    print "received header was: "+authz_header
     if (authz_header == None):
         abort(401)
     # Compute hmac sha256 of request content
     correct_authz = "HMAC "+hmac.new(app.config['EVENT_SECRET_KEY'],request.data,hashlib.sha256).hexdigest()
+    print "Raw data was: "+request.data
     hmac_matched = False
     # python 2.7.7 required for compare_digest
     try:
         hmac_matched = hmac.compare_digest(authz_header, correct_authz)
     except AttributeError:
-        app.logger.warn("falling back to insecure HMAC comparison (upgrade python to 2.7.7+!")
+        app.logger.warn("falling back to insecure HMAC comparison (upgrade python to 2.7.7+!)")
         hmac_matched = authz_header == correct_authz
     if (not hmac_matched):
         app.logger.warn("Mismatched HMAC, should have been "+correct_authz)
