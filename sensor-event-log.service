@@ -1,0 +1,17 @@
+[Unit]
+Description=Sensor Event Logging
+
+[Service]
+ExecStart=/home/sensor-collector/sensor_env/bin/python sensor-event-log/sensor_server/Server.py
+WorkingDirectory=/home/sensor-collector
+Environment="SENSOR_SERVER_SETTINGS=/home/sensor-collector/sensor.conf"
+Restart=always
+Nice=19
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=full
+NoNewPrivileges=true
+StandardOutput=syslog
+
+[Install]
+WantedBy=multi-user.target
