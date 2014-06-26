@@ -51,7 +51,7 @@ def simple_parse_and_send(smart_output, smart_attr_name, sensor_suffix):
         m = re.search(smart_attr_name+r".*\s(\d+)(\s*\(.*\)\s*)?$", smart_output, re.MULTILINE)
         r = m.group(1).strip()
         print sensor_suffix+": "+r
-        #send_reading(monitor_prefix+sensor_suffix, r)
+        send_reading(monitor_prefix+sensor_suffix, r)
     except:
         print "failed to record "+sensor_suffix
 
