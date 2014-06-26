@@ -58,7 +58,7 @@ def simple_parse_and_send(smart_output, smart_attr_name, sensor_suffix):
 # Run smartctl, with provided disk
 try:
     smartctl_out = check_output(["smartctl", "-a", args.disk])
-except Exception e:
+except Exception, e:
     smartctl_out = str(e.output)
 # if the return code is not 0, we'll exit with an exception.
 
