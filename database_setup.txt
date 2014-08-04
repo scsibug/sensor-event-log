@@ -3,12 +3,14 @@ Switch pg_hba.conf local authentication to "md5" instead of "peer".
 Create a user/schema
 su - postgres
 psql
+CREATE DATABASE sensorcollector
+\connect sensorcollector
 CREATE USER sensorcollector WITH PASSWORD 'sensorcollector';
-CREATE SCHEMA sensorcollector
+CREATE SCHEMA sensorcollector;
 GRANT ALL PRIVILEGES ON SCHEMA sensorcollector TO sensorcollector;
 
 logout
 
 psql sensorcollector -U sensorcollector
-\g schema.sql
+\i schema.sql
 
