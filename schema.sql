@@ -7,7 +7,8 @@ create table agents (
   signing_key text,
   description text,
   created timestamp with time zone,
-  attr hstore -- agent metadata
+  attr hstore, -- agent metadata
+  active boolean -- Is this agent allowed to write data?
 );
 
 -- Sensors interact with the environment to read values/detect change
@@ -31,6 +32,6 @@ create table samples (
   event text, -- event or state from a discrete sensor
   last_seen timestamp with time zone, -- for coalesced sensors, when was the last time we saw this value?
   times_seen integer, -- how many readings have been sent with this same value?
-  attr hstore -- sample metadata
+    attr hstore -- sample metadata
 );
 

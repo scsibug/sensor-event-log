@@ -13,6 +13,8 @@ import decimal
 
 ## PG_CONN
 # expected value: 'dbname=sensorcollector user=sensorcollector password=sensorcollector host=localhost'
+## PG_POOL_MAX
+# max size of postgres connection pool.  Default is "10".
 ## APP_DEBUG 
 # expected value: "true" (case-insensitive) to enable debug, any other
 # value or unset to disable debugging.
@@ -23,31 +25,30 @@ app = Flask("sensor-collector")
 app.config.update(dict(
     DEBUG=os.environ.get("DEBUG","false")=="true".lower(),
     SECRET_KEY=os.environ.get("SECRET_SESSION_KEY", 'development key'),
-    PG_CONN = os.environ.get("PG_CONN")
+    PG_CONN = os.environ.get("PG_CONN"),
+    PG_POOL_MAX=int(os.environ.get("PG_POOL_MAX", '10'))
 ))
 
+# Connection pool
 dbpool = None
 
-# On startup: 
-# * initialize a backend
+# On startup:
+# * initialize database connection pool
 # * enumerate the list of known agents
 # * enumerate all the known sensors
 
-
-def get_db():
+def get_conn():
     global dbpool
-    conn = getattr(g, 'conn', None)
-    if conn is None:
+    g.conn = getattr(g, 'conn', None)
+    if g.conn is None:
         g.conn = dbpool.getconn()
-        app.logger.info("Got database connection")
-    return conn
+    return g.conn
 
 @app.teardown_appcontext
 def teardown_db(exception):
     global dbpool
     conn = getattr(g, 'conn', None)
     if conn is not None:
-        app.logger.info("returning connection to pool")
         dbpool.putconn(conn)
         g.conn = None
 
@@ -62,15 +63,25 @@ def setup_logging():
 @app.before_first_request
 def setup_db_pool():
     global dbpool
-    app.logger.info("setting up db pool...")
-    dbpool = psycopg2.pool.ThreadedConnectionPool(1,10, dsn=app.config['PG_CONN'])
-    app.logger.info("finished setting up pool")
+    app.logger.info("Starting PG connection pool")
+    dbpool = psycopg2.pool.ThreadedConnectionPool(1,app.config['PG_POOL_MAX'], dsn=app.config['PG_CONN'])
 
 @app.route("/status", methods=['GET'])
 def status():
-    get_db()
+    get_conn()
     app.logger.info("logging for first request")
     return "Looking Good!"
+
+# Retrieve all active agents
+@app.route("/agents", methods=['GET'])
+def agents():
+    # Query and display all the active agents
+    c = get_conn()
+    curs = c.cursor()
+    curs.execute("SELECT name, description FROM agents WHERE active=TRUE");
+    agents = dict(curs.fetchall())
+    curs.close()
+    return str(agents)
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0")
