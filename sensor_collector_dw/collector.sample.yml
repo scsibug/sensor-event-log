@@ -1,6 +1,24 @@
-template: Hello, %s!
-
-defaultName: Stranger
+logging:
+  level: INFO
+  loggers:
+    "com.gregheartsfield.sel.collector": DEBUG
+  appenders:
+    - type: console
+      threshold: INFO
+      target: stderr
+      timeZone: UTC
+    - type: file
+      threshold: WARN
+      currentLogFilename: ./logs/app.log
+      archivedLogFilenamePattern: ./logs/app-%d.log.gz
+      archivedFileCount: 5
+      timeZone: UTC
+    - type: file
+      threshold: ERROR
+      currentLogFilename: ./logs/errors.log
+      archivedLogFilenamePattern: ./logs/errors-%d.log.gz
+      archivedFileCount: 10
+      timeZone: UTC
 
 database:
   # the name of your JDBC driver
@@ -10,10 +28,10 @@ database:
   user: sensordb_dev
 
   # the password
-  password: xxxxxxxx
+  password: XXXXXXX
 
   # the JDBC URL
-  url: jdbc:postgresql://pluto.wellorder.net/sensordb_dev
+  url: jdbc:postgresql://localhost/sensordb_dev
 
   # any properties specific to your JDBC driver:
   properties:
