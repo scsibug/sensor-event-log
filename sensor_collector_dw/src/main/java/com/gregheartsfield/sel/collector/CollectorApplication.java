@@ -38,7 +38,7 @@ public class CollectorApplication extends Application<CollectorConfiguration> {
 			try {
 			final DBI jdbi = factory.build(environment, configuration.getDataSourceFactory(), "postgresql");
 			} catch (ClassNotFoundException cnf) {
-
+				// add logging / this is fatal
 			}
 			//final UserDAO dao = jdbi.onDemand(UserDAO.class);
 			//environment.jersey().register(new UserResource(dao));
