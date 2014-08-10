@@ -10,7 +10,7 @@ database:
   user: sensordb_dev
 
   # the password
-  password: sensordb_dev
+  password: xxxxxxxx
 
   # the JDBC URL
   url: jdbc:postgresql://pluto.wellorder.net/sensordb_dev

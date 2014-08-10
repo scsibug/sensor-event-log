@@ -3,6 +3,8 @@ package com.gregheartsfield.sel.collector;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import io.dropwizard.jdbi.DBIFactory;
+import org.skife.jdbi.v2.DBI;
 import com.gregheartsfield.sel.collector.resources.HelloWorldResource;
 import com.gregheartsfield.sel.collector.health.TemplateHealthCheck;
 
@@ -31,6 +33,16 @@ public class CollectorApplication extends Application<CollectorConfiguration> {
 																																 );
 			final TemplateHealthCheck healthCheck =
         new TemplateHealthCheck(configuration.getTemplate());
+
+			final DBIFactory factory = new DBIFactory();
+			try {
+			final DBI jdbi = factory.build(environment, configuration.getDataSourceFactory(), "postgresql");
+			} catch (ClassNotFoundException cnf) {
+
+			}
+			//final UserDAO dao = jdbi.onDemand(UserDAO.class);
+			//environment.jersey().register(new UserResource(dao));
+
 			environment.healthChecks().register("template", healthCheck);
 			environment.jersey().register(resource);
 		}
