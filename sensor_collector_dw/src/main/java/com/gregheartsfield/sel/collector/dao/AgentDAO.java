@@ -6,7 +6,7 @@ import java.util.List;
 import com.gregheartsfield.sel.collector.core.Agent;
 
 public interface AgentDAO {
-	@SqlQuery("select id, name from agents where active=true")
+	@SqlQuery("select id, name, description, created, active, attr from agents where active=true")
 	@Mapper(AgentMapper.class)
 	List<Agent> findActiveAgents();
 
