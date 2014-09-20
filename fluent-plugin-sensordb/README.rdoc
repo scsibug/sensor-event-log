@@ -1,0 +1,47 @@
+= fluent-plugin-sensordb
+
+== Component
+
+== Requirements
+
+- PostgreSQL 9.0 or higher
+  - hstore changed at PostgreSQL 9.0.
+- postgres-contrib
+- ruby-pg
+
+=== How to Install hstore
+
+hstore is in the contrib.
+
+9.1 or higher:
+
+  psql <dbname> -c "CREATE EXTENSION hstore;"
+
+9.0:
+
+  psql <dbname> -f ${PGHOME}/share/contrib/hstore.sql
+
+== Configuration
+
+Example:
+
+  <match **>
+    type sensordb
+    database sensorcollector
+    user my_user
+    password my_pass
+  </match>
+
+== Thanks
+
+This plugin was built based on the {fluent-plugin-pghstore}{https://github.com/shirou/fluent-plugin-pghstore} plugin.
+
+== Copyright
+
+Copyright:: Copyright (c) 2014- Greg Heartsfield
+License::   Apache License
+
+
+== ChangeLog
+
+0.0.1
