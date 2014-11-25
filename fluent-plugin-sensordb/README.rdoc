@@ -32,6 +32,10 @@ Example:
     password my_pass
   </match>
 
+== Installation
+fluent-gem build fluent-plugin-sensordb.gemspec
+sudo fluent-gem install fluent-plugin-sensordb-0.0.1.gem
+
 == Thanks
 
 This plugin was built based on the {fluent-plugin-pghstore}{https://github.com/shirou/fluent-plugin-pghstore} plugin.

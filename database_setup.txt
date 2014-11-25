@@ -6,9 +6,8 @@ psql
 CREATE DATABASE sensorcollector
 \connect sensorcollector
 CREATE USER sensorcollector WITH PASSWORD 'sensorcollector';
-CREATE SCHEMA sensorcollector;
 GRANT ALL PRIVILEGES ON SCHEMA sensorcollector TO sensorcollector;
-
+CREATE EXTENSION hstore;
 logout
 
 psql sensorcollector -U sensorcollector
